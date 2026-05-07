@@ -13,6 +13,7 @@ import {
   KeyboardAvoidingView,
   Platform,
 } from 'react-native'
+import AsyncStorage from '@react-native-async-storage/async-storage'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { Ionicons } from '@expo/vector-icons'
 import { s, vs } from 'react-native-size-matters'
@@ -71,7 +72,10 @@ export default function Profilescreen({ navigation }) {
     setHasChanges(true)
   }
   // ── SAVE ──
-  const handleSave = () => {
+  const handleSave =async() => {
+    await AsyncStorage.setItem('profileImage',profileImage)
+    await AsyncStorage.setItem('profileName',fullName)
+
     // Later: API call to Spring Boot to update user profile
     // await axios.put('/api/user/profile', { fullName, email, phone })
     setIsEditing(false)
@@ -102,7 +106,11 @@ export default function Profilescreen({ navigation }) {
         ]
       )
     } else {
-      navigation.goBack()
+      // navigation.goBack()
+      navigation.navigate('accountscreen',{
+        updatedImage:profileImage,
+        updatedName:fullName,
+      })
     }
   }
   // ── CAMERA / GALLERY ──
@@ -231,7 +239,7 @@ export default function Profilescreen({ navigation }) {
               label="Date of Birth"
               value={dob}
               onChangeText={handleFieldChange(setDob)}
-              isEditing={isEditing}
+              isEditing={false}
               icon=""
             />
             <View style={styles.fieldDivider} />
@@ -239,7 +247,7 @@ export default function Profilescreen({ navigation }) {
               label="Country"
               value={country}
               onChangeText={handleFieldChange(setCountry)}
-              isEditing={isEditing}
+              isEditing={false}
               icon=""
             />
             <View style={styles.fieldDivider} />

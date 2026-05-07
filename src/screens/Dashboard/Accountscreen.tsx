@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import {
   View,
   Text,
@@ -13,22 +13,51 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { Ionicons } from '@expo/vector-icons'
 import { s, vs } from 'react-native-size-matters'
+import AsyncStorage from '@react-native-async-storage/async-storage'
 const { width } = Dimensions.get('window')
 // ── Settings items data ──
 const SETTINGS_ITEMS_TOP = [
-  { id: 1, label: 'Change Password',       hasArrow: true,  hasToggle: false, route: 'changepasswordscreen' },
-  { id: 2, label: '2FA Authentication',    hasArrow: true,  hasToggle: false, route: 'twofactorauthentication'          },
-  { id: 3, label: 'Notification',          hasArrow: false, hasToggle: true,  route: null                   },
-  { id: 4, label: 'Refer Friends & Business', hasArrow: true, hasToggle: false, route: 'referscreen'        },
-  { id: 5, label: 'Privacy & Policy',      hasArrow: true,  hasToggle: false, route: 'privacyscreen'        },
+  { id: 1, label: 'Change Password',          hasArrow: true,  hasToggle: false, route: 'changepasswordscreen'     },
+  { id: 2, label: '2FA Authentication',       hasArrow: true,  hasToggle: false, route: 'twofactorauthentication'  },
+  { id: 3, label: 'Notification',             hasArrow: false, hasToggle: true,  route: null                       },
+  { id: 4, label: 'Refer Friends & Business', hasArrow: true,  hasToggle: false, route: 'referscreen'              },
+  { id: 5, label: 'Privacy & Policy',         hasArrow: true,  hasToggle: false, route: 'privacyscreen'            },
+   
+
 ]
 const SETTINGS_ITEMS_BOTTOM = [
   { id: 6, icon: 'help-circle-outline',        label: 'FAQs',               hasArrow: true, hasToggle: false, route: 'faqscreen'   },
   { id: 7, icon: 'information-circle-outline', label: 'Terms & Conditions', hasArrow: true, hasToggle: false, route: 'termsscreen' },
+ { id: 5, label: 'Customer Support',         hasArrow: true,  hasToggle: false, route: 'supportscreen'      },
 ]
-export default function Accountscreen({ navigation }) {
+export default function Accountscreen({ navigation, route }) {
   const [logout, setLogout] = useState(false)
   const [notificationsEnabled, setNotificationsEnabled] = useState(true)
+  const [profileImage, setProfileImage] = useState(
+    'https://randomuser.me/api/portraits/men/32.jpg'
+  )
+  const [profileName, setProfileName] = useState('Caleb Antwi')
+  // ── Load on first mount ──
+  useEffect(() => {
+    const loadProfile = async () => {
+      const image = await AsyncStorage.getItem('profileImage')
+      const name  = await AsyncStorage.getItem('profileName')
+      if (image) setProfileImage(image)
+      if (name)  setProfileName(name)
+    }
+    loadProfile()
+  }, [])
+  // ── Reload every time screen comes into focus ──
+  // This fixes the issue when navigating back from dashboard or any screen
+  useEffect(() => {
+    const unsubscribe = navigation.addListener('focus', async () => {
+      const image = await AsyncStorage.getItem('profileImage')
+      const name  = await AsyncStorage.getItem('profileName')
+      if (image) setProfileImage(image)
+      if (name)  setProfileName(name)
+    })
+    return unsubscribe
+  }, [navigation])
   // ── Navigate to item's screen if route exists ──
   const handleItemPress = (item) => {
     if (item.route) {
@@ -47,7 +76,7 @@ export default function Accountscreen({ navigation }) {
       <View style={styles.topBar}>
         <TouchableOpacity
           style={styles.backButton}
-          onPress={() => navigation.goBack()}
+          onPress={() => navigation.navigate('dashboard')}
         >
           <Ionicons name="chevron-back" size={s(20)} color="#333" />
         </TouchableOpacity>
@@ -67,15 +96,15 @@ export default function Accountscreen({ navigation }) {
         >
           <View style={styles.profileImageWrapper}>
             <Image
-              source={{ uri: 'https://randomuser.me/api/portraits/men/32.jpg' }}
+              source={{ uri: profileImage }}
               style={styles.profileImage}
             />
             <TouchableOpacity style={styles.cameraButton}>
               <Ionicons name="camera" size={s(13)} color="#fff" />
             </TouchableOpacity>
           </View>
-          <Text style={styles.profileName}>Alex Dordan</Text>
-          <Text style={styles.profileRole}>Systems Analyst</Text>
+          <Text style={styles.profileName}>{profileName}</Text>
+          <Text style={styles.profileRole}>Banker</Text>
         </TouchableOpacity>
         {/* ── TOP SETTINGS LIST ── */}
         <View style={styles.settingsCard}>
@@ -143,7 +172,6 @@ export default function Accountscreen({ navigation }) {
     </SafeAreaView>
   )
 }
-
 
 
 

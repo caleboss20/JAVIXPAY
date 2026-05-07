@@ -25,6 +25,7 @@ import ForgotPassword from "../Forgotpassword/Forgotpassword";
 import EmailOtp from "../Forgotpassword/Emailotp";
 import Setpasswordscreen from "../Forgotpassword/Setpasswordscreen";
 import Walletscreen from "../Dashboard/Wallets/Walletscreen";
+import Accountscreen from "../Dashboard/Accountscreen";
 
 
 
@@ -60,6 +61,7 @@ function MainStackNavigator(){
              {/* <Stack.Screen name="dashboard" component={Dashboard} /> */}
              <Stack.Screen name="dashboard" component={Bottomtabbar} />
                <Stack.Screen name="walletscreen" component={Walletscreen} />
+               <Stack.Screen name="accountscreen" component={Accountscreen} />
               <Stack.Screen name="profilepage" component={Profilescreen} />
              <Stack.Screen name="amountscreen" component={Amountscreen} />
                <Stack.Screen name="twofactorauthentication" component={Twofactorauthentication} />

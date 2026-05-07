@@ -204,6 +204,7 @@ export default function Setpasswordscreen() {
     </SafeAreaView>
   )
 }
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
