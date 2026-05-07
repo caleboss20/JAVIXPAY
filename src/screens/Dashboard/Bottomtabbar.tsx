@@ -3,11 +3,12 @@ import { Ionicons } from '@expo/vector-icons'
 import { View, TouchableOpacity, StyleSheet } from 'react-native';
 import { s,vs } from 'react-native-size-matters';
 import Dashboard from '../Dashboard/Dashboard'
-import Wallets from './Wallets'
+import Wallets from './Walletscreen'
 import Qrscreen from './Qrscreen'
 import History from './History'
 import Settings from './Settings'
 import Accountscreen from './Accountscreen';
+import Walletscreen from './Wallets/Walletscreen';
 const Tab = createBottomTabNavigator()
 // ── Custom QR center button ──
 function QRTabButton({ children, onPress }) {
@@ -42,7 +43,7 @@ export default function Bottomtabbar() {
       })}
     >
       <Tab.Screen name="Home" component={Dashboard} />
-      <Tab.Screen name="Wallets" component={Wallets} />
+      <Tab.Screen name="Wallets" component={Walletscreen} />
       <Tab.Screen
         name="QR"
         component={Qrscreen}

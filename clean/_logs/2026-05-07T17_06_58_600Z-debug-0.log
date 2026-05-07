@@ -7,7 +7,7 @@
 6 silly config load:file:C:\Users\Caleb\AppData\Roaming\npm\etc\npmrc
 7 verbose title npm exec expo start
 8 verbose argv "exec" "--" "expo" "start"
-9 verbose logfile logs-max:10 dir:C:\Users\Caleb\OneDrive\Desktop\CODER\project2\clean\_logs\2026-05-06T13_21_19_875Z-
-10 verbose logfile C:\Users\Caleb\OneDrive\Desktop\CODER\project2\clean\_logs\2026-05-06T13_21_19_875Z-debug-0.log
+9 verbose logfile logs-max:10 dir:C:\Users\Caleb\OneDrive\Desktop\CODER\project2\clean\_logs\2026-05-07T17_06_58_600Z-
+10 verbose logfile C:\Users\Caleb\OneDrive\Desktop\CODER\project2\clean\_logs\2026-05-07T17_06_58_600Z-debug-0.log
 11 silly logfile start cleaning logs, removing 1 files
 12 silly logfile done cleaning log files

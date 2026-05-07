@@ -24,6 +24,7 @@ import Twofactorauthentication from "../PinAuth/Twofactorauthentication";
 import ForgotPassword from "../Forgotpassword/Forgotpassword";
 import EmailOtp from "../Forgotpassword/Emailotp";
 import Setpasswordscreen from "../Forgotpassword/Setpasswordscreen";
+import Walletscreen from "../Dashboard/Wallets/Walletscreen";
 
 
 
@@ -58,6 +59,7 @@ function MainStackNavigator(){
              <Stack.Screen name="pinauth" component={PinAuth} />
              {/* <Stack.Screen name="dashboard" component={Dashboard} /> */}
              <Stack.Screen name="dashboard" component={Bottomtabbar} />
+               <Stack.Screen name="walletscreen" component={Walletscreen} />
               <Stack.Screen name="profilepage" component={Profilescreen} />
              <Stack.Screen name="amountscreen" component={Amountscreen} />
                <Stack.Screen name="twofactorauthentication" component={Twofactorauthentication} />
