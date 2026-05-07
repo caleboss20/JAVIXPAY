@@ -1,0 +1,40 @@
+0 verbose cli C:\Program Files\nodejs\node.exe C:\Program Files\nodejs\node_modules\npm\bin\npm-cli.js
+1 info using npm@11.11.0
+2 info using node@v24.14.1
+3 silly config load:file:C:\Program Files\nodejs\node_modules\npm\npmrc
+4 silly config load:file:c:\Users\Caleb\OneDrive\Desktop\CODER\project2\.npmrc
+5 silly config load:file:C:\Users\Caleb\.npmrc
+6 silly config load:file:C:\Users\Caleb\AppData\Roaming\npm\etc\npmrc
+7 verbose title npm view expo-status-bar@latest description homepage version time
+8 verbose argv "view" "--json" "--" "expo-status-bar@latest" "description" "homepage" "version" "time"
+9 verbose logfile logs-max:10 dir:c:\Users\Caleb\OneDrive\Desktop\CODER\project2\clean\_logs\2026-05-07T09_36_14_032Z-
+10 verbose logfile c:\Users\Caleb\OneDrive\Desktop\CODER\project2\clean\_logs\2026-05-07T09_36_14_032Z-debug-0.log
+11 silly logfile start cleaning logs, removing 2 files
+12 silly logfile done cleaning log files
+13 http fetch GET https://registry.npmjs.org/expo-status-bar attempt 1 failed with ENOTFOUND
+14 http fetch GET https://registry.npmjs.org/expo-status-bar attempt 2 failed with ENOTFOUND
+15 http fetch GET https://registry.npmjs.org/expo-status-bar attempt 3 failed with ENOTFOUND
+16 verbose type system
+17 verbose stack FetchError: request to https://registry.npmjs.org/expo-status-bar failed, reason: getaddrinfo ENOTFOUND registry.npmjs.org
+17 verbose stack     at ClientRequest.<anonymous> (C:\Program Files\nodejs\node_modules\npm\node_modules\minipass-fetch\lib\index.js:130:14)
+17 verbose stack     at ClientRequest.emit (node:events:508:28)
+17 verbose stack     at emitErrorEvent (node:_http_client:108:11)
+17 verbose stack     at _destroy (node:_http_client:963:9)
+17 verbose stack     at onSocketNT (node:_http_client:983:5)
+17 verbose stack     at process.processTicksAndRejections (node:internal/process/task_queues:91:21)
+18 error code ENOTFOUND
+19 error syscall getaddrinfo
+20 error errno ENOTFOUND
+21 error network request to https://registry.npmjs.org/expo-status-bar failed, reason: getaddrinfo ENOTFOUND registry.npmjs.org
+22 error network This is a problem related to network connectivity.
+22 error network In most cases you are behind a proxy or have bad network settings.
+22 error network
+22 error network If you are behind a proxy, please make sure that the
+22 error network 'proxy' config is set properly.  See: 'npm help config'
+23 verbose cwd c:\Users\Caleb\OneDrive\Desktop\CODER\project2
+24 verbose os Windows_NT 10.0.26100
+25 verbose node v24.14.1
+26 verbose npm  v11.11.0
+27 verbose exit 1
+28 verbose code 1
+29 error A complete log of this run can be found in: c:\Users\Caleb\OneDrive\Desktop\CODER\project2\clean\_logs\2026-05-07T09_36_14_032Z-debug-0.log
