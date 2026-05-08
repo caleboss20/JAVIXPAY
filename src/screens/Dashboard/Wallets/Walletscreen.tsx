@@ -18,7 +18,7 @@ import WalletCard from '../../Components/Walletcard';
 import Selectcountrymodal from '../../Components/Selectcountrymodal';
 const Walletscreen = ({ navigation }: any) => {
   const [ModalOpen,setModalOpen]=useState(false);
-  const { transactions } = useTransactions()
+  const { transactions }:any = useTransactions()
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{paddingBottom:vs(100)}}>

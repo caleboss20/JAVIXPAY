@@ -279,9 +279,12 @@ const styles = StyleSheet.create({
   },
   radio: {
     width: s(15), 
-    height: s(15), borderRadius: s(11),
-    borderWidth: 2, borderColor: '#D1D5DB',
-    alignItems: 'center', justifyContent: 'center',
+    height: s(15), 
+    borderRadius: s(11),
+    borderWidth: 2,
+     borderColor: '#D1D5DB',
+    alignItems: 'center', 
+    justifyContent: 'center',
   },
   radioSelected: {
     borderColor: '#16A34A',

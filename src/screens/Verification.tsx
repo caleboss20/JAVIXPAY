@@ -175,9 +175,7 @@ export default function Verification({ navigation }) {
                   <Text style={styles.countryItemName}>{item.name}</Text>
                   <Text style={styles.countryItemCode}>{item.code}</Text>
                   {/* Checkmark on selected */}
-                  {selectedCountry.code === item.code && (
-                    <Ionicons name="checkmark" size={s(18)} color="green" />
-                  )}
+                 
                 </TouchableOpacity>
               )}
               ItemSeparatorComponent={() => (

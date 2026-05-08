@@ -298,18 +298,18 @@ export default function QrScreen({ navigation }) {
           />
         )}
         {/* No results */}
-        {query.length > 0 && results.length === 0 && (
+        {query.length > 0 && results.length ===0 && (
           <View style={styles.emptyContainer}>
             <View style={styles.emptyIcon}>
               <Ionicons name="person-outline" size={40} color="#9CA3AF" />
             </View>
             <Text style={styles.emptyTitle}>No user found</Text>
             <Text style={styles.emptySubtitle}>
-              No CalliPay user matches "{query}"
+              No JavixPay user matches "{query}"
             </Text>
             <TouchableOpacity style={styles.inviteButton}>
               <Ionicons name="share-outline" size={16} color="#16A34A" />
-              <Text style={styles.inviteText}>Invite them to CalliPay</Text>
+              <Text style={styles.inviteText}>Invite them to JavixPay</Text>
             </TouchableOpacity>
           </View>
         )}
