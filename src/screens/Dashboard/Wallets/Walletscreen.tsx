@@ -1,11 +1,11 @@
+
 // src/screens/wallet/WalletScreen.tsx
-import React from 'react'
+import React, { useState } from 'react'
 import {
   View,
   Text,
   StyleSheet,
   TouchableOpacity,
-  
   ScrollView,
   Image,
 } from 'react-native'
@@ -15,7 +15,9 @@ import {SafeAreaView,} from "react-native-safe-area-context"
 import { useTransactions } from '../../Transaction/Transactions'
 import { Ionicons } from '@expo/vector-icons';
 import WalletCard from '../../Components/Walletcard';
+import Selectcountrymodal from '../../Components/Selectcountrymodal';
 const Walletscreen = ({ navigation }: any) => {
+  const [ModalOpen,setModalOpen]=useState(false);
   const { transactions } = useTransactions()
   return (
     <SafeAreaView style={styles.container}>
@@ -24,11 +26,11 @@ const Walletscreen = ({ navigation }: any) => {
         <View style={styles.header}>
           <Text style={styles.headerTitle}>My Wallet</Text>
           <TouchableOpacity style={styles.downloadBtn}>
-           
+          
           </TouchableOpacity>
         </View>
       <WalletCard />
-      
+     
         {/* Transactions Section */}
         {transactions.length === 0 ? (
           // Empty State
@@ -45,7 +47,7 @@ const Walletscreen = ({ navigation }: any) => {
             </Text>
             <TouchableOpacity
               style={styles.addButton}
-              onPress={() => navigation.navigate('AddWallet')}
+              onPress={() => setModalOpen(true)}
             >
               <Ionicons style={styles.plusicon}name="add-circle-outline" size={s(20)}/>
               <Text style={styles.addButtonText}>Add Wallet</Text>
@@ -69,9 +71,15 @@ const Walletscreen = ({ navigation }: any) => {
           </View>
         )}
       </ScrollView>
+      {/* Modal outside ScrollView */}
+      <Selectcountrymodal
+        isOpen={ModalOpen}
+        onClose={()=>setModalOpen(false)}
+      />
     </SafeAreaView>
   )
 }
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
