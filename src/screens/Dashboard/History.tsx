@@ -1,19 +1,19 @@
 import { StyleSheet, Text, View,TouchableOpacity } from 'react-native'
 import React from 'react'
-import { useTransactions } from '../Transaction/Transactions'
 import { SafeAreaProvider ,SafeAreaView} from 'react-native-safe-area-context'
 import { Ionicons } from '@expo/vector-icons'
 import { s, vs } from 'react-native-size-matters';
+import { useTransactions } from '../Context/Transactions';
 
 
 const History = () => {
-  const {transactions}=useTransactions()
+  const {transactions}=useTransactions();
   return (
     <SafeAreaProvider style={styles.container}>
     <SafeAreaView>
       {transactions.length===0?
       <View style={styles.content}>
-        <Ionicons name="card-outline" size={s(140)} />
+        <Ionicons name="wallet-outline" size={s(140)} />
         <View style={styles.middlecontain}>
          <Text style={styles.transactionTitle}>No Transactions Yet</Text>
          <Text style={styles.subTitle}>Your transactions will appear here once you send 

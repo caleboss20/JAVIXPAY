@@ -12,13 +12,16 @@ import {
 import { LinearGradient } from 'expo-linear-gradient'
 import { s, vs } from 'react-native-size-matters';
 import {SafeAreaView,} from "react-native-safe-area-context"
-import { useTransactions } from '../../Transaction/Transactions'
 import { Ionicons } from '@expo/vector-icons';
 import WalletCard from '../../Components/Walletcard';
 import Selectcountrymodal from '../../Components/Selectcountrymodal';
+import { useTransactions } from '../../Context/Transactions';
 const Walletscreen = ({ navigation }: any) => {
   const [ModalOpen,setModalOpen]=useState(false);
   const { transactions }:any = useTransactions()
+  const handlecountryselect=(country:any)=>{
+  navigation.navigate("phoneconfirmationscreen",{country})
+  }
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{paddingBottom:vs(100)}}>
@@ -75,6 +78,7 @@ const Walletscreen = ({ navigation }: any) => {
       <Selectcountrymodal
         isOpen={ModalOpen}
         onClose={()=>setModalOpen(false)}
+        onSelect={handlecountryselect}
       />
     </SafeAreaView>
   )

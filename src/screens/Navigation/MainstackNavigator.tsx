@@ -26,6 +26,7 @@ import EmailOtp from "../Forgotpassword/Emailotp";
 import Setpasswordscreen from "../Forgotpassword/Setpasswordscreen";
 import Walletscreen from "../Dashboard/Wallets/Walletscreen";
 import Accountscreen from "../Dashboard/Accountscreen";
+import PhoneConfirmationScreen from "../Dashboard/Wallets/Phoneconfirmationscreen";
 
 
 
@@ -60,7 +61,10 @@ function MainStackNavigator(){
              <Stack.Screen name="pinauth" component={PinAuth} />
              {/* <Stack.Screen name="dashboard" component={Dashboard} /> */}
              <Stack.Screen name="dashboard" component={Bottomtabbar} />
+             {/* wallet screens */}
                <Stack.Screen name="walletscreen" component={Walletscreen} />
+                <Stack.Screen name="phoneconfirmationscreen" component={PhoneConfirmationScreen} />
+                {/* end wallet */}
                <Stack.Screen name="accountscreen" component={Accountscreen} />
               <Stack.Screen name="profilepage" component={Profilescreen} />
              <Stack.Screen name="amountscreen" component={Amountscreen} />
