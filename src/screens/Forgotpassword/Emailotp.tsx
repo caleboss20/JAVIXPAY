@@ -91,9 +91,9 @@ export default function EmailOtp() {
       setLoading(true)
       setTimeout(() => {
         setLoading(false)
-        // ← navigate based on type
+        // navigate based on type
         if (type === 'wallet') {
-          navigation.navigate('PinSetup' as never, { country, phone } as never)
+          navigation.navigate('walletpin' as never, { country, phone } as never)
         } else {
           navigation.navigate('setpasswordscreen' as never)
         }

@@ -27,6 +27,7 @@ import Setpasswordscreen from "../Forgotpassword/Setpasswordscreen";
 import Walletscreen from "../Dashboard/Wallets/Walletscreen";
 import Accountscreen from "../Dashboard/Accountscreen";
 import PhoneConfirmationScreen from "../Dashboard/Wallets/Phoneconfirmationscreen";
+import WalletPin from "../PinAuth/Walletpin";
 
 
 
@@ -64,6 +65,7 @@ function MainStackNavigator(){
              {/* wallet screens */}
                <Stack.Screen name="walletscreen" component={Walletscreen} />
                 <Stack.Screen name="phoneconfirmationscreen" component={PhoneConfirmationScreen} />
+                 <Stack.Screen name="walletpin" component={WalletPin} />
                 {/* end wallet */}
                <Stack.Screen name="accountscreen" component={Accountscreen} />
               <Stack.Screen name="profilepage" component={Profilescreen} />
