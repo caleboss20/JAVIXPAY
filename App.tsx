@@ -11,9 +11,8 @@ export default function App() {
   return (
  <UserAuthProvider>
   <WalletProvider>
-   <TransactionProvider>
-    
- <NavigationContainer>
+   <TransactionProvider>  
+   <NavigationContainer>
     <MainStackNavigator />
    </NavigationContainer>
   </TransactionProvider>

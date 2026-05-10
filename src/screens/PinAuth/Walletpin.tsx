@@ -85,14 +85,7 @@ export default function WalletPin({ navigation, route }: any) {
 
  //for context for adding to wallets after pin confirmation//
   const {addWallet}=useWallet();
-  //Adding wallet to context here//
-  addWallet({
-    country:country.name,
-    currency:country.currency,
-    countryCode:country.dial,
-    flag:country.flag,
-    phone:phone
-  })
+ 
 
   const shakeAnim = useRef(new Animated.Value(0)).current;
   useEffect(() => {
@@ -142,6 +135,16 @@ export default function WalletPin({ navigation, route }: any) {
         const hashed = await hashPin(currentPin);
         // save under this wallet's unique key
         await AsyncStorage.setItem(WALLET_PIN_KEY, hashed);
+
+         //Adding wallet to context here//
+     addWallet({
+    country:country.name,
+    currency:country.currency,
+    countryCode:country.dial,
+    flag:country.flag,
+    phone:phone
+  })
+
         setPin('');
         setTimeout(() => {
           setLoading(false);
@@ -151,7 +154,7 @@ export default function WalletPin({ navigation, route }: any) {
             newWallet:true, 
             country,
             phone ,
-                }
+            }
             );
         }, 4000);
       } catch (e) {

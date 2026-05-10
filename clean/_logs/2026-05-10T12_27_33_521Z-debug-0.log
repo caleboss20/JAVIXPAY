@@ -9,3 +9,5 @@
 8 verbose argv "exec" "--" "expo" "start"
 9 verbose logfile logs-max:10 dir:C:\Users\Caleb\OneDrive\Desktop\CODER\project2\clean\_logs\2026-05-10T12_27_33_521Z-
 10 verbose logfile C:\Users\Caleb\OneDrive\Desktop\CODER\project2\clean\_logs\2026-05-10T12_27_33_521Z-debug-0.log
+11 silly logfile start cleaning logs, removing 1 files
+12 silly logfile done cleaning log files

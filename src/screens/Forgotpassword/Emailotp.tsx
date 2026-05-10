@@ -90,13 +90,15 @@ export default function EmailOtp() {
       setError('')
       setLoading(true)
       setTimeout(() => {
-        setLoading(false)
+       
         // navigate based on type
         if (type === 'wallet') {
           navigation.navigate('walletpin' as never, { country, phone } as never)
+           
         } else {
           navigation.navigate('setpasswordscreen' as never)
         }
+        setLoading(false)
       }, 4000)
     } else {
       setError('Invalid code. Please try again.')

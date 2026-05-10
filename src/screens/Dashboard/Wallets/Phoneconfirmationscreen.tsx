@@ -28,7 +28,7 @@ const PhoneConfirmationScreen = ({ route, navigation }: any) => {
       type:'wallet',
       country,
       phone: `${country.dial}${phone}`,
-    })
+    } as never)
   }
   return (
     <SafeAreaView style={styles.container}>
