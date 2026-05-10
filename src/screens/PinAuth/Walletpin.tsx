@@ -72,17 +72,27 @@ export default function WalletPin({ navigation, route }: any) {
   //  dynamic from route
   const { country, phone } = route.params
   //  unique key per wallet using phone number
+
+
+
   const WALLET_PIN_KEY = `@wallet_pin_hash_${phone}`
   const [screen,   setScreen]   = useState<'set' | 'confirm'>('set');
   const [pin,      setPin]      = useState('');
   const [firstPin, setFirstPin] = useState('');
   const [loading,  setLoading]  = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
-  //for context for adding to wallets after pin confirmation//
+ 
+
+ //for context for adding to wallets after pin confirmation//
   const {addWallet}=useWallet();
-  
-
-
+  //Adding wallet to context here//
+  addWallet({
+    country:country.name,
+    currency:country.currency,
+    countryCode:country.dial,
+    flag:country.flag,
+    phone:phone
+  })
 
   const shakeAnim = useRef(new Animated.Value(0)).current;
   useEffect(() => {
@@ -136,7 +146,13 @@ export default function WalletPin({ navigation, route }: any) {
         setTimeout(() => {
           setLoading(false);
           // navigate to wallet success with country info
-          navigation.navigate('WalletSuccess', { country, phone });
+          navigation.navigate('walletscreen',
+             {
+            newWallet:true, 
+            country,
+            phone ,
+                }
+            );
         }, 4000);
       } catch (e) {
         setErrorMsg('Something went wrong. Try again.');
