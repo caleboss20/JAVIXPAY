@@ -242,10 +242,11 @@ const styles = StyleSheet.create({
      marginBottom: s(25),
   },
   label: {
-    fontSize: s(13),
-    fontWeight: '600',
-    color: '#111827',
-    marginBottom: vs(10),
+     fontSize:s(14),
+    fontWeight:'400',
+    color: '#333',
+    // letterSpacing: s(0.5),
+    // marginBottom: s(8)/,
   },
   inputWrapper: {
     flexDirection: 'row',
@@ -255,7 +256,7 @@ const styles = StyleSheet.create({
     borderRadius: s(10),
     paddingHorizontal: s(12),
     // backgroundColor: '#F9FAFB',
-    marginBottom: vs(4),
+    marginBottom: vs(14),
      marginTop:s(10),
   },
   inputError: {

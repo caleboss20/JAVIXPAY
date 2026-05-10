@@ -16,7 +16,7 @@ import { s, vs } from 'react-native-size-matters'
 import { useNavigation, useRoute } from '@react-navigation/native'
 import * as Crypto from 'expo-crypto'
 const CODE_LENGTH = 6
-const maskEmail = (email) => {
+const maskEmail = (email: string) => {
   if (!email) return ''
   const [name, domain] = email.split('@')
   const masked = name.slice(0, 2) + '****'
@@ -25,12 +25,13 @@ const maskEmail = (email) => {
 export default function EmailOtp() {
   const navigation = useNavigation()
   const route = useRoute()
-  const { email } = route.params || { email: 'user@gmail.com' }
+  // ← now reads type, phone, country too
+  const { email, type, phone, country } = (route.params as any) || {}
   const [otp, setOtp] = useState(['', '', '', '', '', ''])
   const [hashedCode, setHashedCode] = useState('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
-  const inputRefs = useRef([])
+  const inputRefs = useRef<any[]>([])
   const shakeAnim = useRef(new Animated.Value(0)).current
   // ── Generate and hash code on mount ──
   const generateCode = async () => {
@@ -39,11 +40,6 @@ export default function EmailOtp() {
       Crypto.CryptoDigestAlgorithm.SHA256,
       code
     )
-    // ── TODO: BACKEND ────────────────────────────────────────────
-    // Backend will generate the code, hash it and send OTP to email
-    // e.g. await api.post('/auth/send-otp', { email })
-    // Remove all frontend code generation when backend is ready
-    // ─────────────────────────────────────────────────────────────
     console.log('OTP Code (dev only):', code)
     console.log('Hashed Code:', hashed)
     setHashedCode(hashed)
@@ -62,7 +58,7 @@ export default function EmailOtp() {
     ]).start()
   }
   // ── Handle box input ──
-  const handleChange = (text, index) => {
+  const handleChange = (text: string, index: number) => {
     if (!/^\d*$/.test(text)) return
     const newOtp = [...otp]
     newOtp[index] = text
@@ -73,7 +69,7 @@ export default function EmailOtp() {
     }
   }
   // ── Handle backspace ──
-  const handleKeyPress = (e, index) => {
+  const handleKeyPress = (e: any, index: number) => {
     if (e.nativeEvent.key === 'Backspace' && !otp[index] && index > 0) {
       inputRefs.current[index - 1].focus()
     }
@@ -90,17 +86,17 @@ export default function EmailOtp() {
       Crypto.CryptoDigestAlgorithm.SHA256,
       enteredCode
     )
-    // ── TODO: BACKEND ────────────────────────────────────────────
-    // Send enteredCode to backend for verification
-    // e.g. const result = await api.post('/auth/verify-otp', { email, code: enteredCode })
-    // Backend will compare hashes securely server side
-    // ─────────────────────────────────────────────────────────────
     if (enteredHashed === hashedCode) {
       setError('')
       setLoading(true)
       setTimeout(() => {
         setLoading(false)
-        navigation.navigate('setpasswordscreen')
+        // ← navigate based on type
+        if (type === 'wallet') {
+          navigation.navigate('PinSetup' as never, { country, phone } as never)
+        } else {
+          navigation.navigate('setpasswordscreen' as never)
+        }
       }, 4000)
     } else {
       setError('Invalid code. Please try again.')
@@ -115,31 +111,31 @@ export default function EmailOtp() {
     setOtp(['', '', '', '', '', ''])
     setError('')
     inputRefs.current[0].focus()
-    // ── TODO: BACKEND ────────────────────────────────────────────
-    // Call backend to resend OTP to email
-    // e.g. await api.post('/auth/resend-otp', { email })
-    // ─────────────────────────────────────────────────────────────
-    Alert.alert('Code Resent', 'A new code has been sent to your email.')
+    Alert.alert('Code Resent', 'A new code has been sent.')
   }
   return (
     <SafeAreaView style={styles.container}>
-      
-      {/* ── ICON ── */}
-        <Image
-                style={styles.logo}
-                source={require('../../../assets/javix.png')}
-                resizeMode="contain"
-              />
-      {/* ── TITLE ── */}
+      {/* ICON */}
+      <Image
+        style={styles.logo}
+        source={require('../../../assets/javix.png')}
+        resizeMode="contain"
+      />
+      {/* TITLE — changes based on type */}
       <View style={styles.contentcontainer}>
-    <Text style={styles.title}>Check your email</Text>
-      <Text style={styles.subtitle}>
-        Input the code that was sent to{'\n'}
-        <Text style={styles.email}>{maskEmail(email)}</Text>
-      </Text>
+        <Text style={styles.title}>
+          {type === 'wallet' ? 'Verify your number' : 'Check your email'}
+        </Text>
+        <Text style={styles.subtitle}>
+          {type === 'wallet'
+            ? `Enter the code sent to ${phone}`
+            : `Input the code that was sent to\n`}
+          {type !== 'wallet' && (
+            <Text style={styles.email}>{maskEmail(email)}</Text>
+          )}
+        </Text>
       </View>
-    
-      {/* ── OTP BOXES ── */}
+      {/* OTP BOXES — unchanged */}
       <Animated.View
         style={[styles.otpRow, { transform: [{ translateX: shakeAnim }] }]}
       >
@@ -162,11 +158,9 @@ export default function EmailOtp() {
           />
         ))}
       </Animated.View>
-      {/* ── ERROR MESSAGE ── */}
-      {error ? (
-        <Text style={styles.errorText}>{error}</Text>
-      ) : null}
-      {/* ── CONTINUE BUTTON ── */}
+      {/* ERROR */}
+      {error ? <Text style={styles.errorText}>{error}</Text> : null}
+      {/* CONTINUE BUTTON */}
       <TouchableOpacity
         style={styles.button}
         onPress={handleVerify}
@@ -175,31 +169,31 @@ export default function EmailOtp() {
       >
         <Text style={styles.buttontext}>Continue</Text>
       </TouchableOpacity>
-      {/* ── ACTIVITY INDICATOR ── */}
+      {/* LOADER */}
       {loading && (
-        <ActivityIndicator
-          size="small"
-          color="#2cb65f"
-          style={styles.loader}
-        />
+        <ActivityIndicator size="small" color="#2cb65f" style={styles.loader} />
       )}
-      {/* ── RESEND ── */}
+      {/* RESEND */}
       <TouchableOpacity onPress={handleResend} disabled={loading}>
         <Text style={styles.resendText}>
           Didn't get any code?{' '}
           <Text style={styles.resendLink}>Click to resend</Text>
         </Text>
       </TouchableOpacity>
-      {/* ── BACK TO LOGIN ── */}
-      <TouchableOpacity
-        onPress={() => navigation.navigate('loginscreen')}
-        disabled={loading}
-      >
-        <Text style={styles.backToLogin}> Back to log in</Text>
-      </TouchableOpacity>
+      {/* BACK — only show for email flow */}
+      {type !== 'wallet' && (
+        <TouchableOpacity
+          onPress={() => navigation.navigate('loginscreen' as never)}
+          disabled={loading}
+        >
+          <Text style={styles.backToLogin}>Back to log in</Text>
+        </TouchableOpacity>
+      )}
     </SafeAreaView>
   )
 }
+
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,

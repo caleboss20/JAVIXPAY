@@ -6,8 +6,8 @@ import { s, vs } from 'react-native-size-matters'
 import { useUserAuth } from '../../Context/UserAuthcontext'
 
 const PhoneConfirmationScreen = ({ route, navigation }: any) => {
-  const { country } = route.params  // ← country from modal
-  const { user }:any = useUserAuth()    // ← autofill from registration
+  const { country } = route.params  // country from modal
+  const { user }:any = useUserAuth()    // autofill from registration
   const [phone, setPhone] = useState(user?.phone || '')
   const [error, setError] = useState('')
   const validate = () => {
@@ -24,7 +24,8 @@ const PhoneConfirmationScreen = ({ route, navigation }: any) => {
   }
   const handleContinue = () => {
     if (!validate()) return
-    navigation.navigate('WalletOTP', {
+    navigation.navigate('emailotp', {
+      type:'wallet',
       country,
       phone: `${country.dial}${phone}`,
     })
@@ -115,10 +116,11 @@ const styles = StyleSheet.create({
     marginBottom: vs(10),
   },
   title: {
-    fontSize: s(22),
-    fontWeight: '700',
-    color: '#111',
-    marginBottom: vs(6),
+    fontSize:s(20),
+    fontWeight:'500',
+    color: '#333',
+    letterSpacing: 0.5,
+    marginBottom: 8,
   },
   subtitle: {
    fontSize:s(12),
@@ -140,13 +142,13 @@ const styles = StyleSheet.create({
   inputRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#f4f4f4',
+    backgroundColor: '#f5f5f5',
     borderRadius: s(12),
     paddingHorizontal: s(14),
-    height: vs(52),
+    height: vs(49),
   },
   inputError: {
-    borderWidth: 1.5,
+    borderWidth: s(0.6),
     borderColor: '#e53935',
   },
   dialBox: {
@@ -188,6 +190,7 @@ const styles = StyleSheet.create({
   infoBox: {
     flexDirection: 'row',
     alignItems: 'flex-start',
+    // justifyContent:'center',
     gap: s(8),
     backgroundColor: '#F0FDF4',
     borderRadius: s(10),

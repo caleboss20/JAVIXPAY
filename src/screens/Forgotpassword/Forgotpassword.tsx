@@ -16,7 +16,7 @@ const requestPasswordReset = async (email: string) => {
   // For now, simulate API delay
   await new Promise(resolve => setTimeout(resolve, 1000))
   // Simulate backend response
-  if (email !== 'test@gmail.com') {
+  if (email !== 'mrrcaleboss@gmail.com') {
     throw new Error('Email not found')
   }
   return { success: true }
@@ -144,8 +144,8 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#ccc',
     borderRadius: 10,
-    padding: 15,
-    fontSize: 16,
+    padding: s(15),
+    fontSize: s(14),
     width:'100%',
   },
   error: {
@@ -172,7 +172,7 @@ const styles = StyleSheet.create({
     fontSize:s(12),
   },
    logo: {
-    width: s(130),
+    width: s(160),
     height: vs(95),
     alignSelf:'center',
   },
