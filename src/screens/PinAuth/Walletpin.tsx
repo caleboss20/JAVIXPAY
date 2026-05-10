@@ -14,6 +14,7 @@ import * as Crypto from 'expo-crypto';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { s, vs } from 'react-native-size-matters';
 import { Ionicons } from '@expo/vector-icons';
+import { useWallet } from '../Context/Walletcontext';
 const PIN_LENGTH = 4;
 
 async function hashPin(pin: string) {
@@ -68,15 +69,21 @@ function Numpad({ onPress, onDelete }: { onPress: (k: string) => void; onDelete:
 }
 // ── Main Component ──
 export default function WalletPin({ navigation, route }: any) {
-  // ← dynamic from route
+  //  dynamic from route
   const { country, phone } = route.params
-  // ← unique key per wallet using phone number
+  //  unique key per wallet using phone number
   const WALLET_PIN_KEY = `@wallet_pin_hash_${phone}`
   const [screen,   setScreen]   = useState<'set' | 'confirm'>('set');
   const [pin,      setPin]      = useState('');
   const [firstPin, setFirstPin] = useState('');
   const [loading,  setLoading]  = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
+  //for context for adding to wallets after pin confirmation//
+  const {addWallet}=useWallet();
+  
+
+
+
   const shakeAnim = useRef(new Animated.Value(0)).current;
   useEffect(() => {
     if (pin.length === PIN_LENGTH) {

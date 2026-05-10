@@ -16,12 +16,14 @@ import { Ionicons } from '@expo/vector-icons';
 import WalletCard from '../../Components/Walletcard';
 import Selectcountrymodal from '../../Components/Selectcountrymodal';
 import { useTransactions } from '../../Context/Transactions';
+import { useWallet } from '../../Context/Walletcontext';
 const Walletscreen = ({ navigation }: any) => {
   const [ModalOpen,setModalOpen]=useState(false);
-  const { transactions }:any = useTransactions()
+ const {wallets,addwallet}=useWallet()
   const handlecountryselect=(country:any)=>{
   navigation.navigate("phoneconfirmationscreen",{country})
   }
+
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{paddingBottom:vs(100)}}>
@@ -35,7 +37,7 @@ const Walletscreen = ({ navigation }: any) => {
       <WalletCard />
      
         {/* Transactions Section */}
-        {transactions.length === 0 ? (
+        {wallets.length === 0 ? (
           // Empty State
           <View style={styles.emptyState}>
               <Image
@@ -58,20 +60,7 @@ const Walletscreen = ({ navigation }: any) => {
           </View>
         ) : (
           // Transaction List
-          <View style={styles.transactionList}>
-            <Text style={styles.transactionTitle}>Recent Transactions</Text>
-            {transactions.map((item: any) => (
-              <View key={item.id} style={styles.transactionItem}>
-                <View style={styles.transactionDetails}>
-                  <Text style={styles.transactionRecipient}>{item.recipient}</Text>
-                  <Text style={styles.transactionDate}>{item.date}</Text>
-                </View>
-                <Text style={styles.transactionAmount}>
-                  -{item.amount} {item.currency}
-                </Text>
-              </View>
-            ))}
-          </View>
+        ""
         )}
       </ScrollView>
       {/* Modal outside ScrollView */}

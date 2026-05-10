@@ -1,5 +1,6 @@
 import { TransactionProvider } from './src/screens/Context/Transactions';
 import { UserAuthProvider } from './src/screens/Context/UserAuthcontext';
+import { WalletProvider } from './src/screens/Context/Walletcontext';
 import MainStackNavigator from './src/screens/Navigation/MainstackNavigator';
 import { NavigationContainer } from '@react-navigation/native';
 
@@ -9,11 +10,14 @@ import { NavigationContainer } from '@react-navigation/native';
 export default function App() {
   return (
  <UserAuthProvider>
+  <WalletProvider>
    <TransactionProvider>
-     <NavigationContainer>
+    
+ <NavigationContainer>
     <MainStackNavigator />
    </NavigationContainer>
   </TransactionProvider>
- </UserAuthProvider>
+    </WalletProvider>
+  </UserAuthProvider>
   );
 }
