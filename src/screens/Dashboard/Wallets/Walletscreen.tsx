@@ -1,77 +1,195 @@
-
 // src/screens/wallet/WalletScreen.tsx
 import React, { useState } from 'react'
 import {
   View,
   Text,
-  StyleSheet,
   TouchableOpacity,
   ScrollView,
   Image,
+  Modal,
+  StyleSheet
 } from 'react-native'
-import { LinearGradient } from 'expo-linear-gradient'
 import { s, vs } from 'react-native-size-matters';
-import {SafeAreaView,} from "react-native-safe-area-context"
+import { SafeAreaView } from "react-native-safe-area-context"
 import { Ionicons } from '@expo/vector-icons';
 import WalletCard from '../../Components/Walletcard';
 import Selectcountrymodal from '../../Components/Selectcountrymodal';
-import { useTransactions } from '../../Context/Transactions';
 import { useWallet } from '../../Context/Walletcontext';
-const Walletscreen = ({ navigation }: any) => {
-  const [ModalOpen,setModalOpen]=useState(false);
- const {wallets,addwallet}=useWallet()
-  const handlecountryselect=(country:any)=>{
-  navigation.navigate("phoneconfirmationscreen",{country})
+/**
+* WalletScreen
+*
+* Main wallet management screen for JavixPay.
+* Handles two states:
+* 1. Empty — no wallets added yet → shows onboarding UI
+* 2. Has wallets — renders list of user's cross-border wallets
+*
+* Also handles the wallet creation success popup
+* which appears when navigating from WalletPin screen
+* after a new wallet has been created successfully.
+*/
+const Walletscreen = ({ navigation, route }: any) => {
+  // ── Modal state for country selection ──
+  const [ModalOpen, setModalOpen] = useState(false);
+  // ── Wallet context — source of truth for all wallets ──
+  const { wallets } = useWallet()
+  /**
+   * Read route params passed from WalletPin screen.
+   * newWallet — true if user just created a wallet
+   * country   — the country object selected during wallet creation
+   * phone     — the phone number linked to the new wallet
+   *
+   * Falls back to empty object to prevent crashes
+   * when screen is accessed via bottom tab navigation
+   * without any params.
+   */
+  const { newWallet, country, phone } = route.params || {}
+  // ── Success popup — only shown when arriving from WalletPin ──
+  const [showSuccess, setShowSuccess] = useState(newWallet || false)
+  /**
+   * Handles country selection from the modal.
+   * Navigates to phone confirmation screen
+   * passing the selected country as a route param.
+   */
+  const handlecountryselect = (country: any) => {
+    navigation.navigate("phoneconfirmationscreen", { country })
   }
-
   return (
     <SafeAreaView style={styles.container}>
-      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{paddingBottom:vs(100)}}>
-        {/* Header */}
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={{ paddingBottom: vs(100) }}
+      >
+        {/* ── Header ── */}
         <View style={styles.header}>
           <Text style={styles.headerTitle}>My Wallet</Text>
-          <TouchableOpacity style={styles.downloadBtn}>
-          
-          </TouchableOpacity>
+          <TouchableOpacity style={styles.downloadBtn} />
         </View>
-      <WalletCard />
-     
-        {/* Transactions Section */}
+        {/* ── Global wallet balance card ── */}
+        <WalletCard />
+        {/*
+         * ── Wallet List / Empty State ──
+         * Conditionally renders based on whether
+         * the user has any wallets in context.
+         */}
         {wallets.length === 0 ? (
-          // Empty State
+          // ── Empty State ──
+          // Shown when user has no wallets yet.
+          // Prompts user to add their first wallet.
           <View style={styles.emptyState}>
-              <Image
-                      style={styles.walletimage}
-                      source={require('../../../../assets/wallet.png')}
-                      resizeMode="contain"
-                    />
+            <Image
+              style={styles.walletimage}
+              source={require('../../../../assets/wallet.png')}
+              resizeMode="contain"
+            />
             <Text style={styles.emptyTitle}>No Wallet Added Yet</Text>
             <Text style={styles.emptySubtitle}>
-            Add a wallet to send, receive and
-             manage {'\n'} your money across borders instantly
+              Add a wallet to send, receive and
+              manage {'\n'} your money across borders instantly
             </Text>
             <TouchableOpacity
               style={styles.addButton}
               onPress={() => setModalOpen(true)}
             >
-              <Ionicons style={styles.plusicon}name="add-circle-outline" size={s(20)}/>
+              <Ionicons style={styles.plusicon} name="add-circle-outline" size={s(20)} />
               <Text style={styles.addButtonText}>Add Wallet</Text>
             </TouchableOpacity>
           </View>
         ) : (
-          // Transaction List
-        ""
+          // ── Wallet List ──
+          // Renders all wallets from context.
+          // Each wallet is stored with a unique phone-based key in AsyncStorage.
+          // <View style={styles.walletList}>
+          //   {wallets.map((wallet: any) => (
+          //     <View key={wallet.id} style={styles.walletItem}>
+          //       <Text style={styles.walletFlag}>{wallet.flag}</Text>
+          //       <View style={styles.walletInfo}>
+          //         <Text style={styles.walletCountry}>{wallet.country}</Text>
+          //         <Text style={styles.walletPhone}>{wallet.phone}</Text>
+          //       </View>
+          //       <Text style={styles.walletBalance}>
+          //         {wallet.currency} {wallet.balance.toFixed(2)}
+          //       </Text>
+          //     </View>
+          //   ))}
+          //   {/* ── Add another wallet CTA ── */}
+          //   <TouchableOpacity
+          //     style={styles.addButton}
+          //     onPress={() => setModalOpen(true)}
+          //   >
+          //     <Ionicons name="add-circle-outline" size={s(20)} />
+          //     <Text style={styles.addButtonText}>Add Another Wallet</Text>
+          //   </TouchableOpacity>
+          // </View>
+
+          ""
         )}
       </ScrollView>
-      {/* Modal outside ScrollView */}
+      {/*
+       * ── Country Selection Modal ──
+       * Bottom sheet modal for selecting a country
+       * when adding a new wallet.
+       * Rendered outside ScrollView to avoid z-index issues.
+       */}
       <Selectcountrymodal
         isOpen={ModalOpen}
-        onClose={()=>setModalOpen(false)}
+        onClose={() => setModalOpen(false)}
         onSelect={handlecountryselect}
       />
+      {/*
+       * ── Wallet Created Success Popup ──
+       * Modal overlay shown immediately after wallet creation.
+       * Receives country and phone from WalletPin via route params.
+       * Dismissed by user tapping "Go to Wallet".
+       *
+       * TODO: BACKEND
+       * After backend integration, wallet data will be
+       * fetched from the server instead of local context.
+       */}
+      <Modal
+        visible={showSuccess}
+        transparent
+        animationType="fade"
+      >
+        <View style={styles.overlay}>
+          <View style={styles.successCard}>
+            {/* ── Success checkmark ── */}
+            <View style={styles.checkCircle}>
+              <Ionicons name="checkmark" size={s(40)} color="#fff" />
+            </View>
+            {/* ── Country flag ── */}
+            <Text style={styles.successFlag}>{country?.flag}</Text>
+            {/* ── Success title — dynamic country name ── */}
+            <Text style={styles.successTitle}>
+              {country?.name} Wallet Created!
+            </Text>
+            {/* ── Wallet details ── */}
+            <View style={styles.successDetails}>
+              <Text style={styles.successDetailText}>
+                💰 {country?.currency} 0.00
+              </Text>
+              <Text style={styles.successDetailText}>
+                📱 {phone}
+              </Text>
+            </View>
+            {/* ── Success message ── */}
+            <Text style={styles.successSubtitle}>
+              Your {country?.name} wallet is ready.{'\n'}
+              Start sending and receiving {country?.currency} instantly.
+            </Text>
+            {/* ── Dismiss button ── */}
+            <TouchableOpacity
+              style={styles.successBtn}
+              onPress={() => setShowSuccess(false)}
+            >
+              <Text style={styles.successBtnText}>Go to Wallet</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
     </SafeAreaView>
   )
 }
+export default Walletscreen
 
 const styles = StyleSheet.create({
   container: {
@@ -193,4 +311,3 @@ plusicon:{
   },
  
 })
-export default Walletscreen
