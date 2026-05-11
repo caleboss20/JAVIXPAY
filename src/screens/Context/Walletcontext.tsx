@@ -9,12 +9,15 @@ type Wallet = {
   phone: string;
   balance: number;
   createdAt: string;
+  theme?:string //theme is optional
 };
 type WalletContextType = {
   wallets: Wallet[];
   addWallet: (wallet: Omit<Wallet, "id" | "balance" | "createdAt">) => void;
   removeWallet: (phone: string) => void;
   getWalletByPhone: (phone: string) => Wallet | undefined;
+  updateWalletTheme:(WalletId:string,theme:string)=>void
+  
 };
 const WalletContext = createContext<WalletContextType | undefined>(undefined);
 const STORAGE_KEY = "javix_wallets";
@@ -58,8 +61,17 @@ export function WalletProvider({ children }: { children: React.ReactNode }) {
   const getWalletByPhone = (phone: string): Wallet | undefined => {
     return wallets.find(w => w.phone === phone);
   };
+
+//for updating colour theme//
+const updateWalletTheme = (walletId: string, theme: string) => {
+  setWallets(prev =>
+    prev.map(w => w.id === walletId ? { ...w, theme } : w)
+  )
+}
+
+
   return (
-    <WalletContext.Provider value={{ wallets, addWallet, removeWallet, getWalletByPhone }}>
+    <WalletContext.Provider value={{ wallets,addWallet, removeWallet, getWalletByPhone,updateWalletTheme }}>
       {children}
     </WalletContext.Provider>
   );

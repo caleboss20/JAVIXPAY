@@ -9,22 +9,28 @@ import {
   StyleSheet,
   Animated,
   PanResponder,
+  Dimensions,
 } from 'react-native'
 import { s, vs } from 'react-native-size-matters'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { Ionicons } from '@expo/vector-icons'
-import { BlurView } from 'expo-blur'
 import WalletCard from '../../Components/Walletcard'
 import Selectcountrymodal from '../../Components/Selectcountrymodal'
 import { useWallet } from '../../Context/Walletcontext'
+const { width: SCREEN_WIDTH } = Dimensions.get('window')
+const CARD_WIDTH = SCREEN_WIDTH - s(10)
+const CARD_GAP = s(12)
+const SNAP_INTERVAL = CARD_WIDTH + CARD_GAP
 const Walletscreen = ({ navigation, route }: any) => {
   const [ModalOpen, setModalOpen] = useState(false)
   const { wallets } = useWallet()
   const { newWallet, country } = route.params || {}
   const [showSuccess, setShowSuccess] = useState(newWallet || false)
+  const [activeIndex, setActiveIndex] = useState(0)
   const slideAnim = useRef(new Animated.Value(0)).current
   const opacityAnim = useRef(new Animated.Value(0)).current
   const autoCloseTimer = useRef<any>(null)
+  const carouselRef = useRef<ScrollView>(null)
   // ── Clear params on mount so back nav doesn't retrigger success ──
   useEffect(() => {
     if (newWallet) {
@@ -56,9 +62,7 @@ const Walletscreen = ({ navigation, route }: any) => {
       toValue: 0,
       duration: 150,
       useNativeDriver: true,
-    }).start(() => {
-      setShowSuccess(false)
-    })
+    }).start(() => setShowSuccess(false))
     slideAnim.setValue(0)
   }
   const panResponder = useRef(
@@ -82,6 +86,11 @@ const Walletscreen = ({ navigation, route }: any) => {
   const handlecountryselect = (country: any) => {
     navigation.navigate('phoneconfirmationscreen', { country })
   }
+  const handleScroll = (event: any) => {
+    const offsetX = event.nativeEvent.contentOffset.x
+    const index = Math.round(offsetX / SNAP_INTERVAL)
+    if (index !== activeIndex) setActiveIndex(index)
+  }
   return (
     <SafeAreaView style={styles.container} edges={['top', 'left', 'right']}>
       <ScrollView
@@ -92,10 +101,67 @@ const Walletscreen = ({ navigation, route }: any) => {
         <View style={styles.header}>
           <Text style={styles.headerTitle}>My Wallet</Text>
         </View>
-        {/* Wallet card */}
-        <WalletCard />
-        {/* Empty state */}
-        {wallets.length === 0 && (
+        {/* ── Wallet carousel (multiple wallets) ── */}
+        {wallets.length > 0 ? (
+          <View style={styles.carouselContainer}>
+            <ScrollView
+              ref={carouselRef}
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              snapToInterval={SNAP_INTERVAL}
+              snapToAlignment="start"
+              decelerationRate="fast"
+              contentContainerStyle={{ paddingHorizontal: s(2) }}
+              onScroll={handleScroll}
+              scrollEventThrottle={16}
+            >
+              {wallets.map((wallet: any, i: number) => (
+                <React.Fragment key={i}>
+                  <View style={{ width: CARD_WIDTH }}>
+                    <WalletCard wallet={wallet} />
+                  </View>
+                  {i < wallets.length - 1 && (
+                    <View style={{ width: CARD_GAP }} />
+                  )}
+                </React.Fragment>
+              ))}
+            </ScrollView>
+            {/* Pagination dots */}
+            {wallets.length > 1 && (
+              <View style={styles.dotsRow}>
+                {wallets.map((_: any, i: number) => (
+                  <TouchableOpacity
+                    key={i}
+                    activeOpacity={0.7}
+                    onPress={() => {
+                      carouselRef.current?.scrollTo({
+                        x: i * SNAP_INTERVAL,
+                        animated: true,
+                      })
+                      setActiveIndex(i)
+                    }}
+                  >
+                    <View
+                      style={[
+                        styles.dot,
+                        i === activeIndex ? styles.dotActive : styles.dotInactive,
+                      ]}
+                    />
+                  </TouchableOpacity>
+                ))}
+              </View>
+            )}
+            {/* Add another wallet */}
+            <TouchableOpacity
+              style={styles.addAnotherBtn}
+              onPress={() => setModalOpen(true)}
+            >
+              <Ionicons name="add-circle-outline" size={s(18)} color="#145a32" />
+              <Text style={styles.addAnotherText}>Add Another Wallet</Text>
+            </TouchableOpacity>
+          </View>
+        ) : (
+          // ── Empty state ──
           <View style={styles.emptyState}>
             <Image
               style={styles.walletimage}
@@ -116,10 +182,6 @@ const Walletscreen = ({ navigation, route }: any) => {
             </TouchableOpacity>
           </View>
         )}
-       
-     
-
-
       </ScrollView>
       {/* Country modal */}
       <Selectcountrymodal
@@ -135,17 +197,13 @@ const Walletscreen = ({ navigation, route }: any) => {
         statusBarTranslucent={false}
         onRequestClose={handleClose}
       >
-        {/* Blur only behind the sheet, not full screen */}
-        <Animated.View
-          style={[styles.overlay, { opacity: opacityAnim }]}
-        >
+        <Animated.View style={[styles.overlay, { opacity: opacityAnim }]}>
           <TouchableOpacity
             style={StyleSheet.absoluteFill}
             activeOpacity={1}
             onPress={handleClose}
           />
         </Animated.View>
-        {/* Sheet itself sits at bottom */}
         <View style={styles.sheetWrapper} pointerEvents="box-none">
           <Animated.View
             {...panResponder.panHandlers}
@@ -179,13 +237,57 @@ const Walletscreen = ({ navigation, route }: any) => {
     </SafeAreaView>
   )
 }
-
 export default Walletscreen
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
   },
+
+//for the card side//
+carouselContainer: {
+    marginTop: vs(8),
+  },
+  dotsRow: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: vs(12),
+    gap: s(6),
+  },
+  dot: {
+    borderRadius: 99,
+    height: s(8),
+  },
+  dotActive: {
+    width: s(22),        // elongated pill for active
+    backgroundColor: '#14c661',
+  },
+  dotInactive: {
+    width: s(8),
+    backgroundColor: '#D1D5DB',
+  },
+  addAnotherBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    alignSelf: 'center',
+    gap: s(6),
+    marginTop: vs(106),
+    paddingVertical: vs(8),
+    paddingHorizontal: s(16),
+    borderRadius: 99,
+    borderWidth: 1.5,
+    borderColor: '#19a556',
+    backgroundColor: '#e2f1e9',
+  },
+  addAnotherText: {
+    color: '#145a32',
+    fontWeight: '600',
+    fontSize: s(13),
+  },
+
+
+
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
