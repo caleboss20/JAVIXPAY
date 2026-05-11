@@ -1,5 +1,5 @@
-import React, { createContext, useContext, useState } from "react";
-// Types
+import React, { createContext, useContext, useState, useEffect } from "react";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 type Wallet = {
   id: string;
   country: string;
@@ -16,12 +16,33 @@ type WalletContextType = {
   removeWallet: (phone: string) => void;
   getWalletByPhone: (phone: string) => Wallet | undefined;
 };
-// Create context
 const WalletContext = createContext<WalletContextType | undefined>(undefined);
-// Provider
+const STORAGE_KEY = "javix_wallets";
 export function WalletProvider({ children }: { children: React.ReactNode }) {
   const [wallets, setWallets] = useState<Wallet[]>([]);
-  // Add wallet
+  // Load wallets on app start
+  useEffect(() => {
+    const load = async () => {
+      try {
+        const saved = await AsyncStorage.getItem(STORAGE_KEY);
+        if (saved) setWallets(JSON.parse(saved));
+      } catch (e) {
+        console.log("Failed to load wallets", e);
+      }
+    };
+    load();
+  }, []);
+  // Save wallets whenever they change
+  useEffect(() => {
+    const save = async () => {
+      try {
+        await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(wallets));
+      } catch (e) {
+        console.log("Failed to save wallets", e);
+      }
+    };
+    save();
+  }, [wallets]);
   const addWallet = (wallet: Omit<Wallet, "id" | "balance" | "createdAt">) => {
     const newWallet: Wallet = {
       id: Date.now().toString(),
@@ -31,11 +52,9 @@ export function WalletProvider({ children }: { children: React.ReactNode }) {
     };
     setWallets(prev => [...prev, newWallet]);
   };
-  // Remove wallet
   const removeWallet = (phone: string) => {
     setWallets(prev => prev.filter(w => w.phone !== phone));
   };
-  // Get wallet by phone
   const getWalletByPhone = (phone: string): Wallet | undefined => {
     return wallets.find(w => w.phone === phone);
   };
@@ -45,11 +64,8 @@ export function WalletProvider({ children }: { children: React.ReactNode }) {
     </WalletContext.Provider>
   );
 }
-// Custom hook
 export function useWallet(): WalletContextType {
   const context = useContext(WalletContext);
-  if (!context) {
-    throw new Error("useWallet must be used inside WalletProvider");
-  }
+  if (!context) throw new Error("useWallet must be used inside WalletProvider");
   return context;
 }

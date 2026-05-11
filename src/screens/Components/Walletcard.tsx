@@ -3,7 +3,14 @@ import { View, Text, Animated, StyleSheet } from 'react-native'
 import { LinearGradient } from 'expo-linear-gradient'
 import { Ionicons } from '@expo/vector-icons'
 import { s, vs } from 'react-native-size-matters'
-export default function WalletCard({ balance = '0.00', walletName = 'No wallet linked', walletNumber = '**** **** ****' }) {
+import { useWallet } from '../Context/Walletcontext'
+export default function WalletCard() {
+  const { wallets } = useWallet()
+  const activeWallet = wallets[0]
+  const currency = activeWallet?.currency || 'GHS'
+  const balance = activeWallet?.balance?.toFixed(2) || '0.00'
+  const walletName = activeWallet ? `${activeWallet.country} Wallet` : 'No wallet linked'
+  const walletNumber = activeWallet ? `**** **** ${activeWallet.phone.slice(-4)}` : '**** **** ****'
   const shimmerAnim = useRef(new Animated.Value(-1)).current
   useEffect(() => {
     const runShimmer = () => {
@@ -12,14 +19,10 @@ export default function WalletCard({ balance = '0.00', walletName = 'No wallet l
         toValue: 2,
         duration: 2500,
         useNativeDriver: true,
-      }).start(() => {
-        // wait 3 seconds then run again
-        setTimeout(runShimmer, 5000)
-      })
+      }).start(() => setTimeout(runShimmer, 5000))
     }
     runShimmer()
   }, [])
-  // shimmerAnim goes -1 to 2, we map it to translateX across card width
   const cardWidth = s(340)
   const translateX = shimmerAnim.interpolate({
     inputRange: [-1, 2],
@@ -32,16 +35,16 @@ export default function WalletCard({ balance = '0.00', walletName = 'No wallet l
       end={{ x: 1, y: 1 }}
       style={styles.card}
     >
-      {/* ── Shimmer overlay ── */}
+      {/* Shimmer */}
       <Animated.View
         style={[
           styles.shimmer,
           { transform: [{ translateX }, { rotate: '23deg' }] },
         ]}
       />
-      {/* ── Balance ── */}
-      <Text style={styles.balance}>GHS {balance}</Text>
-      {/* ── Bottom row ── */}
+      {/* Balance */}
+      <Text style={styles.balance}>{currency} {balance}</Text>
+      {/* Bottom row */}
       <View style={styles.bottomRow}>
         <View>
           <Text style={styles.walletName}>{walletName}</Text>
@@ -54,6 +57,8 @@ export default function WalletCard({ balance = '0.00', walletName = 'No wallet l
     </LinearGradient>
   )
 }
+
+
 const styles = StyleSheet.create({
   card: {
     backgroundColor: '#2E7D32',

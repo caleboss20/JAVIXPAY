@@ -191,9 +191,9 @@ export default function PinAuth({ navigation }) {
     }
   }
   const title =
-    screen === 'set'     ? 'Set your security PIN 🔒'
-    : screen === 'confirm' ? 'Confirm your PIN 🔒'
-    : 'Enter your PIN 🔒';
+    screen === 'set'     ? 'Set your security PIN '
+    : screen === 'confirm' ? 'Confirm your PIN '
+    : 'Enter your PIN ';
   const subtitle =
     screen === 'set'     ? 'Protect your account with a secure PIN.'
     : screen === 'confirm' ? 'Re-enter your PIN to confirm.'
