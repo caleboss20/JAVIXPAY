@@ -80,6 +80,7 @@ javixpay/
 └── README.md
 ```
 
+
 ## API Documentation
 
 Coming soon. API endpoints documentation will be available in the `/docs` folder.
